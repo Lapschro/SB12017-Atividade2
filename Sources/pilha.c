@@ -1,5 +1,6 @@
 #include "../Headers/pilha.h"
 #include <stdlib.h>
+#include <stdio.h>
 
 typedef struct pilha {
     Nodo* ultimo;
@@ -35,4 +36,27 @@ int Pilha_Get_Size(Pilha* pilha){
     if(pilha == NULL)
         return -1;
     return pilha->size;
+}
+
+void Pilha_Dump(Pilha* pilha){
+    Nodo* aux = pilha->ultimo;
+    while(aux != NULL){
+        switch(Nodo_Get_Type(aux)){
+        case VAL:
+            printf("%lld\n", Nodo_Get_Value(aux));
+            break;
+        case SUM:
+            printf("+\n");
+            break;
+        case SUB:
+            printf("-\n");
+            break;
+        case MUL:
+            printf("*\n");
+            break;
+        case DIV:
+            printf("/\n");
+        }
+        aux = Nodo_Get_Prox(aux);
+    }
 }

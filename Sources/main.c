@@ -12,5 +12,6 @@ int main(int argc, char** argv){
     }else
        strcpy(entrada,argv[1]);
 
-    printf("%s = %lld", entrada, Interpret(entrada));
+    printf("%s = %lld\n\n", entrada, Interpret(entrada));
+    return 0;
 }
