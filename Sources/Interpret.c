@@ -140,14 +140,14 @@ long long Evaluate(Nodo* a){
         Nodo* aux = Pilha_Pop(pilha);
         //Avalia o lado direito
         long long right = Evaluate(aux);
-        free(aux);
+        //free(aux);
         //Avalia o lado esquerdo
         aux = Pilha_Pop(pilha);
         long long left = Evaluate(aux);
-        free(aux);
+        //free(aux);
         //Executa a operação
         long long res = list_of_operations[Nodo_Get_Type(a) - 1](left, right);
-        //free(a);
+        free(a);
         //Checa se o numero a retornar deve ser negativo
         res |= ((res>>47)&1)?0xffff000000000000:0x0;
         return res;
