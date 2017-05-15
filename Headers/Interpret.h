@@ -4,4 +4,4 @@
 #include <stdlib.h>
 
 long long Interpret(char*);
-long long Evaluate(long long (*operation)(long long, long long), Nodo*, Nodo*);
+long long Evaluate(Nodo*);

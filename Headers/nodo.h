@@ -3,7 +3,7 @@
 
 typedef struct nodo Nodo;
 
-typedef enum {VAL = 0, SUM, SUB, MUL, DIV} Typeof;
+typedef enum {VAL = 0, ADD, SUB, MUL, DIV} Typeof;
 
 Nodo* New_Nodo(long long value, Typeof type);
 long long Nodo_Get_Value(Nodo* nodo);
