@@ -67,7 +67,6 @@ int classifica_Op(char letra, char letra_atual){
 
 //-----------------------------------------------
 
-
 //Ponteiro para cada tipo de operacao
 long long (*list_of_operations[4]) (long long, long long) = {adicionar, subtrair, multiplicar, dividir};
 
@@ -81,14 +80,29 @@ long long Interpret(char* expressao){
     int check = 0;
     char c;
     char newExpressao[300];
-
+	
     newExpressao[0] = '(';
     strcpy(newExpressao+1, expressao);
     newExpressao[strlen(newExpressao)+1] = 0;
     newExpressao[strlen(newExpressao)] = ')';
     strcpy(expressao, newExpressao);
-
-    //printf("%s\n", expressao);
+	
+	printf("%s\n", expressao);
+	if(strchr(expressao, ' ')){
+		int i,j;
+		for (i = 0, j = 0; i<strlen(expressao); i++,j++)          
+		{
+			if (expressao[i]!=' ')                           
+				newExpressao[j]=expressao[i];                     
+			else
+				j--;                                     
+		}
+		newExpressao[j]=0;
+	}
+	strcpy(expressao, newExpressao);
+	
+	
+    printf("%s\n", expressao);
 
     for(int i = 0; i < strlen(expressao);){
         c = expressao[i];
