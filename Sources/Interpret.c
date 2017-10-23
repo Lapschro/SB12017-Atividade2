@@ -12,7 +12,7 @@ typedef struct{
 
 int Is_Op(char c);
 void Add_Operation(char c);
-
+/*
 //-----------------OPERAÇÕES--------------------
 long long adicionar(long long a, long long b){
     uint48_t ax, bx;
@@ -38,9 +38,39 @@ long long multiplicar(long long a, long long b){
     bx.field = b;
     return ax.field*bx.field;
 }
+*/
+long long adicionar(long long a, long long b){
+    return a+b;
+}
+
+long long subtrair(long long a, long long b){
+    return a-b;
+}
+
+long long dividir(long long a, long long b){
+    return a/b;
+}
+
+long long multiplicar(long long a, long long b){
+    return a*b;
+}
+
+
 
 long long numero(Nodo* a){
     return Nodo_Get_Value(a);
+}
+
+int checkUnary(char* base, int offset){
+	
+	//printf("Checking if unary\n");
+	if(offset == 1){
+		return 1;
+	}
+	if(Is_Op(base[offset - 1]) || base[offset - 1] == '(' || base[offset - 1] == ')'){
+		return 1;
+	}
+	return 0;
 }
 
 
@@ -67,6 +97,7 @@ int classifica_Op(char letra, char letra_atual){
 
 //-----------------------------------------------
 
+
 //Ponteiro para cada tipo de operacao
 long long (*list_of_operations[4]) (long long, long long) = {adicionar, subtrair, multiplicar, dividir};
 
@@ -80,28 +111,13 @@ long long Interpret(char* expressao){
     int check = 0;
     char c;
     char newExpressao[300];
-	
+
     newExpressao[0] = '(';
     strcpy(newExpressao+1, expressao);
     newExpressao[strlen(newExpressao)+1] = 0;
     newExpressao[strlen(newExpressao)] = ')';
     strcpy(expressao, newExpressao);
-	
-	printf("%s\n", expressao);
-	if(strchr(expressao, ' ')){
-		int i,j;
-		for (i = 0, j = 0; i<strlen(expressao); i++,j++)          
-		{
-			if (expressao[i]!=' ')                           
-				newExpressao[j]=expressao[i];                     
-			else
-				j--;                                     
-		}
-		newExpressao[j]=0;
-	}
-	strcpy(expressao, newExpressao);
-	
-	
+
     printf("%s\n", expressao);
 
     for(int i = 0; i < strlen(expressao);){
@@ -109,16 +125,23 @@ long long Interpret(char* expressao){
         //printf("%c\n", c);
         check = 0;
         if(Is_Op(c)){
-            while(PilhaChar_Get_Size(pilhaOp) > 0 && Is_Op(PilhaChar_Peek(pilhaOp))){
-                if(classifica_Op(c, PilhaChar_Peek(pilhaOp)) <= 0){
-                    NodoChar* aux = PilhaChar_Pop(pilhaOp);
-                    Add_Operation(NodoChar_Get_Value(aux));
-                    free(aux);
-                    continue;
-                }
-                break;
-            }
-            PilhaChar_Push(pilhaOp, New_NodoChar(c));
+			if(c == '-'){
+				if(checkUnary(expressao, i)){
+					Pilha_Push(pilha, New_Nodo(-atoll(expressao + ++i), VAL));
+					check = 1;
+				}
+			}else{
+				while(PilhaChar_Get_Size(pilhaOp) > 0 && Is_Op(PilhaChar_Peek(pilhaOp))){
+					if(classifica_Op(c, PilhaChar_Peek(pilhaOp)) <= 0){
+						NodoChar* aux = PilhaChar_Pop(pilhaOp);
+						Add_Operation(NodoChar_Get_Value(aux));
+						free(aux);
+						continue;
+					}
+					break;
+				}
+				PilhaChar_Push(pilhaOp, New_NodoChar(c));
+			}
         }else if (c == '('){
             PilhaChar_Push(pilhaOp, New_NodoChar(c));
         }else if(c == ')'){
@@ -140,8 +163,9 @@ long long Interpret(char* expressao){
     }
 
 /*****************************************/
-
-    //Pilha_Dump(pilha);
+	/*printf("Dump:\n");
+    Pilha_Dump(pilha);
+	printf("\n");*/
     long long value = Evaluate(Pilha_Pop(pilha));
     free(pilha);
     return  value;
@@ -154,16 +178,16 @@ long long Evaluate(Nodo* a){
         Nodo* aux = Pilha_Pop(pilha);
         //Avalia o lado direito
         long long right = Evaluate(aux);
-        //free(aux);
+        free(aux);
         //Avalia o lado esquerdo
         aux = Pilha_Pop(pilha);
         long long left = Evaluate(aux);
-        //free(aux);
+        free(aux);
         //Executa a operação
         long long res = list_of_operations[Nodo_Get_Type(a) - 1](left, right);
-        free(a);
+        //free(a);
         //Checa se o numero a retornar deve ser negativo
-        res |= ((res>>47)&1)?0xffff000000000000:0x0;
+        //res |= ((res>>47)&1)?0xffff000000000000:0x0;
         return res;
     }else{
         //Se o tipo for Valor então retorna o valor.

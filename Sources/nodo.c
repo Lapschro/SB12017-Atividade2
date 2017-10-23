@@ -3,7 +3,7 @@
 #include <stdlib.h>
 
 typedef struct nodo{
-    uint64_t valor:48;
+    uint64_t valor;
     Typeof type;
     Nodo* prox;
 }Nodo;
